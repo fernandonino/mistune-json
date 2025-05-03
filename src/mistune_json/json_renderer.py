@@ -2,11 +2,9 @@ import mistune
 
 
 class JsonRenderer(mistune.HTMLRenderer):
-    def render_tokens(self, tokens, state):
+    def render_tokens(self, tokens, state) -> list:
         result = []
         result.extend(self.iter_tokens(tokens, state))
-        if len(result) == 1:
-            result = result[0]
         return result
 
     def iter_tokens(self, tokens, state):
