@@ -11,8 +11,8 @@ class JsonRenderer(mistune.HTMLRenderer):
         for tok in tokens:
             yield self.render_token(tok, state)
 
-    def blank_line(self) -> None:
-        pass
+    def blank_line(self) -> dict:
+        return dict()
 
     def link(self, text: str, url: str, title=None) -> dict:
         link = {"type": "a", "href": self.safe_url(url), "content": text}
@@ -46,14 +46,12 @@ class JsonRenderer(mistune.HTMLRenderer):
             "content": text,
         }
 
-    def image(self, text: str, url: str, title=None) -> dict:
+    def image(self, text: str, url: str, title: str = None) -> dict:
         return {
             "type": "img",
             "content": url,
             "title": title,
             "alt": text,
-            "width": "",
-            "height": "",
         }
 
     def emphasis(self, text) -> dict:
