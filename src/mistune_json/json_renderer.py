@@ -16,7 +16,7 @@ class JsonRenderer(mistune.HTMLRenderer):
 
     def link(self, text: str, url: str, title=None) -> dict:
         link = {"type": "a", "href": self.safe_url(url), "content": text}
-        if title != None:
+        if title is not None:
             link["title"] = title
 
         return link
