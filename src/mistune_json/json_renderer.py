@@ -1,4 +1,5 @@
 import mistune
+from typing import Any, Dict, Iterable
 
 
 class JsonRenderer(mistune.HTMLRenderer):
@@ -65,3 +66,8 @@ class JsonRenderer(mistune.HTMLRenderer):
 
     def strong(self, text: str) -> dict:
         return {"type": "strong", "content": text}
+
+    def __call__(self, tokens: Iterable[Dict[str, Any]], state) -> dict:
+        output = self.render_tokens(tokens, state)
+        output = list(filter(lambda item: any(item), output))
+        return {"content": output}
