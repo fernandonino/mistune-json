@@ -1,80 +1,142 @@
 import mistune
-from typing import Any, Dict, Iterable
+from typing import Any, Dict, Iterable, List, Optional, Union
 
 
 class JsonRenderer(mistune.HTMLRenderer):
+    """
+    A renderer for Mistune that outputs Markdown as JSON structures
+    instead of HTML.
+    """
 
-    _output: dict
+    def __init__(self, output: Optional[Dict[str, Any]] = None) -> None:
+        """
+        Initialize the JSON renderer.
+        
+        Args:
+            output: Optional dictionary to update with rendered content
+        """
+        # No need for escape HTML or skip style in JSON renderer
+        super().__init__(escape=False, allow_harmful_protocols=False)
+        self._output: Dict[str, Any] = output if output is not None else {}
 
-    def __init__(self, output: dict = None) -> None:
-        super(JsonRenderer, self).__init__(True, False)
-        self._output = output if output is not None else dict()
+    def render_tokens(self, tokens: Iterable[Dict[str, Any]], state: Any) -> List[Dict[str, Any]]:
+        """
+        Render a list of tokens into JSON structures.
+        
+        Args:
+            tokens: Iterable of tokens to render
+            state: State object from Mistune parser
+            
+        Returns:
+            List of rendered JSON structures
+        """
+        return list(self.iter_tokens(tokens, state))
 
-    def render_tokens(self, tokens, state) -> list:
-        result = []
-        result.extend(self.iter_tokens(tokens, state))
-        return result
-
-    def iter_tokens(self, tokens, state):
+    def iter_tokens(self, tokens: Iterable[Dict[str, Any]], state: Any) -> Iterable[Dict[str, Any]]:
+        """
+        Iterate through tokens and yield rendered JSON structures.
+        
+        Args:
+            tokens: Iterable of tokens to render
+            state: State object from Mistune parser
+            
+        Yields:
+            Rendered JSON structures
+        """
         for tok in tokens:
             yield self.render_token(tok, state)
 
-    def blank_line(self) -> dict:
-        return dict()
+    def __call__(self, tokens: Iterable[Dict[str, Any]], state: Any) -> Dict[str, Any]:
+        """
+        Main entry point for rendering.
+        
+        Args:
+            tokens: Iterable of tokens to render
+            state: State object from Mistune parser
+            
+        Returns:
+            Dictionary with rendered content
+        """
+        content = self.render_tokens(tokens, state)
+        # Filter out empty items
+        filtered_content = [item for item in content if item]
+        self._output.update({"content": filtered_content})
+        return self._output
 
-    def link(self, text: str, url: str, title=None) -> dict:
-        link = {"type": "a", "href": self.safe_url(url), "content": text}
-        if title is not None:
-            link["title"] = title
+    # Block level tokens
+    
+    def blank_line(self) -> Dict[str, Any]:
+        """Render a blank line."""
+        return {}
 
-        return link
-
-    def paragraph(self, text: str) -> dict:
+    def paragraph(self, text: str) -> Dict[str, Any]:
+        """Render a paragraph."""
         return {"type": "p", "content": text}
 
-    def heading(self, text: str, level: int) -> dict:
+    def heading(self, text: str, level: int) -> Dict[str, Any]:
+        """Render a heading."""
         return {"type": "h", "content": text, "level": level}
 
-    def list(self, text: str, ordered: bool, **attrs) -> dict:
+    def block_code(self, code: str, info: Optional[str] = None) -> Dict[str, Any]:
+        """Render a code block."""
+        result = {"type": "code", "content": code}
+        if info:
+            result["lang"] = info.strip()
+        return result
+    
+    def block_quote(self, text: str) -> Dict[str, Any]:
+        """Render a block quote."""
+        return {"type": "blockquote", "content": text}
+
+    def list(self, text: str, ordered: bool, **attrs) -> Dict[str, Any]:
+        """Render an ordered or unordered list."""
         if ordered:
+            result = {"type": "ol", "content": text}
             start = attrs.get("start")
             if start is not None:
-                return {
-                    "type": "ol",
-                    "content": text,
-                    "level": start,
-                }
-            else:
-                return {"type": "ol", "content": text}
+                result["start"] = start
+            return result
         else:
             return {"type": "ul", "content": text}
 
-    def list_item(self, text: str) -> dict:
-        return {
-            "content": text,
-        }
+    def list_item(self, text: str) -> Dict[str, Any]:
+        """Render a list item."""
+        return {"content": text}
+    
+    def thematic_break(self) -> Dict[str, Any]:
+        """Render a thematic break (horizontal rule)."""
+        return {"type": "hr"}
 
-    def image(self, text: str, url: str, title: str = None) -> dict:
-        return {
-            "type": "img",
-            "content": url,
-            "title": title,
-            "alt": text,
-        }
-
-    def emphasis(self, text) -> dict:
-        return {"type": "em", "content": text}
-
-    def block_quote(self, text: str) -> dict:
-        return {"type": "blockquote", "content": text}
-
-    def codespan(self, text: str) -> dict:
-        return {"type": "codespan", "content": text}
-
-    def strong(self, text: str) -> dict:
+    # Span level tokens
+    
+    def strong(self, text: str) -> Dict[str, Any]:
+        """Render strong emphasis."""
         return {"type": "strong", "content": text}
 
-    def __call__(self, tokens: Iterable[Dict[str, Any]], state) -> dict:
-        content = self.render_tokens(tokens, state)
-        self._output.update({"content": list(filter(lambda item: any(item), content))})
-        return self._output
+    def emphasis(self, text: str) -> Dict[str, Any]:
+        """Render emphasis."""
+        return {"type": "em", "content": text}
+
+    def codespan(self, text: str) -> Dict[str, Any]:
+        """Render inline code."""
+        return {"type": "codespan", "content": text}
+
+    def link(self, text: str, url: str, title: Optional[str] = None) -> Dict[str, Any]:
+        """Render a link."""
+        link = {"type": "a", "href": self.safe_url(url), "content": text}
+        if title:
+            link["title"] = title
+        return link
+
+    def image(self, text: str, url: str, title: Optional[str] = None) -> Dict[str, Any]:
+        """Render an image."""
+        return {
+            "type": "img",
+            "src": self.safe_url(url),
+            "alt": text,
+            **({"title": title} if title else {})
+        }
+
+    def linebreak(self) -> Dict[str, Any]:
+        """Render a line break."""
+        return {"type": "br"}
