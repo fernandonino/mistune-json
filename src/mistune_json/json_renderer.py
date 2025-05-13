@@ -3,6 +3,13 @@ from typing import Any, Dict, Iterable
 
 
 class JsonRenderer(mistune.HTMLRenderer):
+
+    _output: dict
+
+    def __init__(self, output: dict = None) -> None:
+        super(JsonRenderer, self).__init__(True, False)
+        self._output = output if output is not None else dict()
+
     def render_tokens(self, tokens, state) -> list:
         result = []
         result.extend(self.iter_tokens(tokens, state))
@@ -68,6 +75,6 @@ class JsonRenderer(mistune.HTMLRenderer):
         return {"type": "strong", "content": text}
 
     def __call__(self, tokens: Iterable[Dict[str, Any]], state) -> dict:
-        output = self.render_tokens(tokens, state)
-        output = list(filter(lambda item: any(item), output))
-        return {"content": output}
+        content = self.render_tokens(tokens, state)
+        self._output.update({"content": list(filter(lambda item: any(item), content))})
+        return self._output
