@@ -1,5 +1,5 @@
 import mistune
-from typing import Any, Dict, Iterable, List, Optional, Union
+from typing import Any, Dict, Iterable, List, Optional
 
 
 class JsonRenderer(mistune.HTMLRenderer):

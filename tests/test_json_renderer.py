@@ -24,40 +24,51 @@ class TestJsonRenderer(unittest.TestCase):
         """Test rendering of paragraphs."""
         md = "This is a paragraph.\n\nThis is another paragraph."
         parsed = self.parse(md)
-        
+
         # Check overall structure
         self.assertIn("content", parsed)
         content = parsed["content"]
         self.assertEqual(len(content), 2)
-        
+
         # Check each paragraph
         self.assertEqual(content[0]["type"], "p")
-        self.assertEqual(content[0]["content"], [{"type": "text", "content": "This is a paragraph."}])
+        self.assertEqual(
+            content[0]["content"], [{"type": "text", "content": "This is a paragraph."}]
+        )
         self.assertEqual(content[1]["type"], "p")
-        self.assertEqual(content[1]["content"], [{"type": "text", "content": "This is another paragraph."}])
+        self.assertEqual(
+            content[1]["content"],
+            [{"type": "text", "content": "This is another paragraph."}],
+        )
 
     def test_headings(self):
         """Test rendering of headings."""
         md = "# Heading 1\n## Heading 2\n### Heading 3"
         parsed = self.parse(md)
-        
+
         # Check overall structure
         self.assertIn("content", parsed)
         content = parsed["content"]
         self.assertEqual(len(content), 3)
-        
+
         # Check each heading
         self.assertEqual(content[0]["type"], "h")
         self.assertEqual(content[0]["level"], 1)
-        self.assertEqual(content[0]["content"], [{"type": "text", "content": "Heading 1"}])
-        
+        self.assertEqual(
+            content[0]["content"], [{"type": "text", "content": "Heading 1"}]
+        )
+
         self.assertEqual(content[1]["type"], "h")
         self.assertEqual(content[1]["level"], 2)
-        self.assertEqual(content[1]["content"], [{"type": "text", "content": "Heading 2"}])
-        
+        self.assertEqual(
+            content[1]["content"], [{"type": "text", "content": "Heading 2"}]
+        )
+
         self.assertEqual(content[2]["type"], "h")
         self.assertEqual(content[2]["level"], 3)
-        self.assertEqual(content[2]["content"], [{"type": "text", "content": "Heading 3"}])
+        self.assertEqual(
+            content[2]["content"], [{"type": "text", "content": "Heading 3"}]
+        )
 
     def test_emphasis(self):
         """Test rendering of emphasis."""
@@ -234,7 +245,9 @@ class TestJsonRenderer(unittest.TestCase):
         self.assertIn("content", result)
         self.assertEqual(len(result["content"]), 1)
         self.assertEqual(result["content"][0]["type"], "h")
-        self.assertEqual(result["content"][0]["content"], [{"type": "text", "content": "Hello"}])
+        self.assertEqual(
+            result["content"][0]["content"], [{"type": "text", "content": "Hello"}]
+        )
         self.assertEqual(result["content"][0]["level"], 1)
 
     def test_line_breaks(self):
