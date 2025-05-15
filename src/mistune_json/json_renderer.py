@@ -11,7 +11,7 @@ class JsonRenderer(mistune.HTMLRenderer):
     def __init__(self, output: Optional[Dict[str, Any]] = None) -> None:
         """
         Initialize the JSON renderer.
-        
+
         Args:
             output: Optional dictionary to update with rendered content
         """
@@ -19,27 +19,31 @@ class JsonRenderer(mistune.HTMLRenderer):
         super().__init__(escape=False, allow_harmful_protocols=False)
         self._output: Dict[str, Any] = output if output is not None else {}
 
-    def render_tokens(self, tokens: Iterable[Dict[str, Any]], state: Any) -> List[Dict[str, Any]]:
+    def render_tokens(
+        self, tokens: Iterable[Dict[str, Any]], state: Any
+    ) -> List[Dict[str, Any]]:
         """
         Render a list of tokens into JSON structures.
-        
+
         Args:
             tokens: Iterable of tokens to render
             state: State object from Mistune parser
-            
+
         Returns:
             List of rendered JSON structures
         """
         return list(self.iter_tokens(tokens, state))
 
-    def iter_tokens(self, tokens: Iterable[Dict[str, Any]], state: Any) -> Iterable[Dict[str, Any]]:
+    def iter_tokens(
+        self, tokens: Iterable[Dict[str, Any]], state: Any
+    ) -> Iterable[Dict[str, Any]]:
         """
         Iterate through tokens and yield rendered JSON structures.
-        
+
         Args:
             tokens: Iterable of tokens to render
             state: State object from Mistune parser
-            
+
         Yields:
             Rendered JSON structures
         """
@@ -49,11 +53,11 @@ class JsonRenderer(mistune.HTMLRenderer):
     def __call__(self, tokens: Iterable[Dict[str, Any]], state: Any) -> Dict[str, Any]:
         """
         Main entry point for rendering.
-        
+
         Args:
             tokens: Iterable of tokens to render
             state: State object from Mistune parser
-            
+
         Returns:
             Dictionary with rendered content
         """
@@ -64,7 +68,7 @@ class JsonRenderer(mistune.HTMLRenderer):
         return self._output
 
     # Block level tokens
-    
+
     def blank_line(self) -> Dict[str, Any]:
         """Render a blank line."""
         return {}
@@ -79,11 +83,11 @@ class JsonRenderer(mistune.HTMLRenderer):
 
     def block_code(self, code: str, info: Optional[str] = None) -> Dict[str, Any]:
         """Render a code block."""
-        result = {"type": "code", "content": code}
+        result = {"type": "code", "content": code.strip()}
         if info:
             result["lang"] = info.strip()
         return result
-    
+
     def block_quote(self, text: str) -> Dict[str, Any]:
         """Render a block quote."""
         return {"type": "blockquote", "content": text}
@@ -102,13 +106,13 @@ class JsonRenderer(mistune.HTMLRenderer):
     def list_item(self, text: str) -> Dict[str, Any]:
         """Render a list item."""
         return {"content": text}
-    
+
     def thematic_break(self) -> Dict[str, Any]:
         """Render a thematic break (horizontal rule)."""
         return {"type": "hr"}
 
     # Span level tokens
-    
+
     def strong(self, text: str) -> Dict[str, Any]:
         """Render strong emphasis."""
         return {"type": "strong", "content": text}
@@ -134,9 +138,13 @@ class JsonRenderer(mistune.HTMLRenderer):
             "type": "img",
             "src": self.safe_url(url),
             "alt": text,
-            **({"title": title} if title else {})
+            **({"title": title} if title else {}),
         }
 
     def linebreak(self) -> Dict[str, Any]:
         """Render a line break."""
         return {"type": "br"}
+
+    def text(self, text: str) -> Dict[str, Any]:
+        """Render plain text."""
+        return {"type": "text", "content": text}
