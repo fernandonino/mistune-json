@@ -42,30 +42,13 @@ print(result)
 # {'content': [{'type': 'h', 'content': ['type': 'text', 'content': 'Hello, world!'], 'level': 1}]}
 ```
 
-## Known bugs and improvements
+## Improvements and bugs
 
-### An array as the return type
-The JSON render will actually return an array. Needless to say, an array is not valid JSON. There are a a few ways to solve this issue.
+### Tables
+There is currently no support for rendering tables (headers and rows). It might be added in the future, if there is enough need for it. You can rise an issue [here](https://github.com/fernandonino/mistune-json/issues) and label it as _enhancement_.
 
-#### Returning a `dict`
-The renderer can return a dictionary with the array in a `content` attribute. Example:
-```json
-{
-  "content": [...]
-}
-```
+### Integration testing
+Tests for a full Markdown document will be added to assure that the JSON render works as expected.
 
-#### Provinding an object to the renderer
-TODO
-
-
-#### The worst fix: no fix
-The user of the renderer uses the array in a dictionary of their own to assign the array to an element of that dictionary. For example:
-```python
-html_page = new HtmlPage()
-html_page.title = "This is the title to be shown in the browser's bar."
-html_page.content = json_render("... some markdown here...")
-```
-
-### Blank lines
-Blank lines are rendered as an empty dictionary, i.e. `{}`. This forces the user of the renderer to iterate over the result array to get rid of these empty elements.
+### Bugs
+If you find a problem with the JSON output structure, feel free to [report a bug](https://github.com/fernandonino/mistune-json/issues).
