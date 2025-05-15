@@ -1,6 +1,5 @@
 # Mistune JSON
-The goal of this project is to provide a very simple JSON renderer plug-in for the [Mistune](https://mistune.lepture.com/en/latest) library.
-The project is still a work in progress. Feel free to contribute with a PR including a new feature or bug fix.
+A JSON renderer for the [Mistune](https://github.com/lepture/mistune) Markdown parser.
 
 ## Supported HTML elements
 So far, the HTML elements supported by this renderer are limited to:
@@ -13,10 +12,10 @@ So far, the HTML elements supported by this renderer are limited to:
 * Links, `<a>`
 * Emphasis, `<em>`
 * Strong, `<strong>`
-* Inline code, `<code>`
 * Blockquote, `<blockquote>`
-
-More elements are to come, especially code blocks (with `<pre><code></code></pre>`).
+* Line breake, `<br>`
+* Thematic breake, `<hr>`
+* Both inline and block code
 
 ## How to use the JSON renderer
 ### Installation
@@ -27,22 +26,20 @@ pip install mistune-json
 
 ### Usage
 ```python
-import json
 import mistune
 from mistune_json import JsonRenderer
-json_renderer = mistune.create_markdown(renderer=JsonRenderer())
 
-print(json.dumps(json_render(
-"""
-# h1 Heading
-## h2 Heading
-### h3 Heading
-This is an unordered list:
-* Item 1
-* Item 2
-* Item 3
-This text has *strong* words. And some _emphasis as well_.
-""")))
+# Create a renderer instance
+renderer = JsonRenderer()
+
+# Create a Markdown parser with the JSON renderer
+markdown = mistune.create_markdown(renderer=renderer)
+
+# Parse Markdown text
+result = markdown("# Hello, world!")
+
+print(result)
+# {'content': [{'type': 'h', 'content': ['type': 'text', 'content': 'Hello, world!'], 'level': 1}]}
 ```
 
 ## Known bugs and improvements
