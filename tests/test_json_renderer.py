@@ -1,13 +1,15 @@
-import mistune
 import unittest
+from typing import Any, Dict, List
+
+import mistune
+
 from mistune_json.json_renderer import JsonRenderer
-from typing import Dict, Any, List
 
 
 class TestJsonRenderer(unittest.TestCase):
     """Test suite for the JsonRenderer class."""
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Set up the parser and renderer for each test."""
         self.renderer = JsonRenderer()
         self.markdown = mistune.create_markdown(renderer=self.renderer)
@@ -20,46 +22,51 @@ class TestJsonRenderer(unittest.TestCase):
         """Helper method to get the content from parsed markdown."""
         return self.parse(text)["content"]
 
-    def test_paragraphs(self):
+    def test_paragraphs(self) -> None:
         """Test rendering of paragraphs."""
         md = "This is a paragraph.\n\nThis is another paragraph."
         parsed = self.parse(md)
-        
+
         # Check overall structure
         self.assertIn("content", parsed)
         content = parsed["content"]
         self.assertEqual(len(content), 2)
-        
+
         # Check each paragraph
         self.assertEqual(content[0]["type"], "p")
-        self.assertEqual(content[0]["content"], [{"type": "text", "content": "This is a paragraph."}])
+        self.assertEqual(
+            content[0]["content"], [{"type": "text", "content": "This is a paragraph."}]
+        )
         self.assertEqual(content[1]["type"], "p")
-        self.assertEqual(content[1]["content"], [{"type": "text", "content": "This is another paragraph."}])
+        self.assertEqual(
+            content[1]["content"],
+            [{"type": "text", "content": "This is another paragraph."}],
+        )
 
-    def test_headings(self):
+    def test_headings(self) -> None:
         """Test rendering of headings."""
         md = "# Heading 1\n## Heading 2\n### Heading 3"
         parsed = self.parse(md)
-        
+
         # Check overall structure
         self.assertIn("content", parsed)
         content = parsed["content"]
         self.assertEqual(len(content), 3)
-        
+
         # Check each heading
         self.assertEqual(content[0]["type"], "h")
         self.assertEqual(content[0]["level"], 1)
         self.assertEqual(content[0]["content"], [{"type": "text", "content": "Heading 1"}])
-        
+
         self.assertEqual(content[1]["type"], "h")
         self.assertEqual(content[1]["level"], 2)
         self.assertEqual(content[1]["content"], [{"type": "text", "content": "Heading 2"}])
-        
+
         self.assertEqual(content[2]["type"], "h")
         self.assertEqual(content[2]["level"], 3)
         self.assertEqual(content[2]["content"], [{"type": "text", "content": "Heading 3"}])
 
-    def test_emphasis(self):
+    def test_emphasis(self) -> None:
         """Test rendering of emphasis."""
         # This test is tricky because the structure depends on mistune's tokenization
         # We'll test the renderer method directly instead
@@ -71,7 +78,7 @@ class TestJsonRenderer(unittest.TestCase):
         self.assertEqual(result["type"], "strong")
         self.assertEqual(result["content"], "strong text")
 
-    def test_code_blocks(self):
+    def test_code_blocks(self) -> None:
         """Test rendering of code blocks."""
         # Let's test the renderer method directly
         result = self.renderer.block_code("print('Hello World')", "python")
@@ -93,7 +100,7 @@ class TestJsonRenderer(unittest.TestCase):
         self.assertEqual(code_block["content"], "print('Hello World')")
         self.assertEqual(code_block["lang"], "python")
 
-    def test_code_blocks_no_language(self):
+    def test_code_blocks_no_language(self) -> None:
         """Test rendering of code blocks without language specification."""
         # Let's test the renderer method directly
         result = self.renderer.block_code("print('Hello World')", None)
@@ -117,7 +124,7 @@ class TestJsonRenderer(unittest.TestCase):
         if "lang" in code_block:
             self.assertIn(code_block["lang"], [None, ""])
 
-    def test_inline_code(self):
+    def test_inline_code(self) -> None:
         """Test rendering of inline code."""
         # Test the renderer method directly
         result = self.renderer.codespan("inline code")
@@ -132,7 +139,7 @@ class TestJsonRenderer(unittest.TestCase):
         # check that the content is somewhere in the output
         self.assertTrue(any("inline code" in str(item) for item in parsed["content"]))
 
-    def test_links(self):
+    def test_links(self) -> None:
         """Test rendering of links."""
         # Test the renderer method directly
         result = self.renderer.link("link text", "https://example.com", "Title")
@@ -148,12 +155,10 @@ class TestJsonRenderer(unittest.TestCase):
         self.assertEqual(result["content"], "link text")
         self.assertNotIn("title", result)
 
-    def test_images(self):
+    def test_images(self) -> None:
         """Test rendering of images."""
         # Test the renderer method directly
-        result = self.renderer.image(
-            "Alt text", "https://example.com/img.jpg", "Image title"
-        )
+        result = self.renderer.image("Alt text", "https://example.com/img.jpg", "Image title")
         self.assertEqual(result["type"], "img")
         self.assertEqual(result["src"], "https://example.com/img.jpg")
         self.assertEqual(result["alt"], "Alt text")
@@ -166,7 +171,7 @@ class TestJsonRenderer(unittest.TestCase):
         self.assertEqual(result["alt"], "Alt text")
         self.assertNotIn("title", result)
 
-    def test_block_quotes(self):
+    def test_block_quotes(self) -> None:
         """Test rendering of block quotes."""
         # Test the renderer method directly
         result = self.renderer.block_quote("Quote content")
@@ -178,16 +183,14 @@ class TestJsonRenderer(unittest.TestCase):
         parsed = self.parse(md)
 
         # Find blockquotes in the content
-        quotes = [
-            item for item in parsed["content"] if item.get("type") == "blockquote"
-        ]
+        quotes = [item for item in parsed["content"] if item.get("type") == "blockquote"]
         self.assertEqual(len(quotes), 1)
 
         # The exact structure of the blockquote content depends on mistune's tokenization
         # We'll just check that it contains our text
         self.assertIn("This is a blockquote", str(quotes[0]["content"]))
 
-    def test_unordered_lists(self):
+    def test_unordered_lists(self) -> None:
         """Test rendering of unordered lists."""
         # Test the renderer method directly
         result = self.renderer.list("List content", ordered=False)
@@ -198,7 +201,7 @@ class TestJsonRenderer(unittest.TestCase):
         item_result = self.renderer.list_item("Item content")
         self.assertEqual(item_result["content"], "Item content")
 
-    def test_ordered_lists(self):
+    def test_ordered_lists(self) -> None:
         """Test rendering of ordered lists."""
         # Test the renderer method directly
         result = self.renderer.list("List content", ordered=True)
@@ -211,13 +214,13 @@ class TestJsonRenderer(unittest.TestCase):
         self.assertEqual(result["content"], "List content")
         self.assertEqual(result["start"], 3)
 
-    def test_horizontal_rule(self):
+    def test_horizontal_rule(self) -> None:
         """Test rendering of horizontal rules."""
         # Test the renderer method directly
         result = self.renderer.thematic_break()
         self.assertEqual(result["type"], "hr")
 
-    def test_output_parameter(self):
+    def test_output_parameter(self) -> None:
         """Test that the output parameter is used."""
         # Create a custom output dictionary
         initial_output = {"meta": {"title": "Test Document"}}
@@ -237,7 +240,7 @@ class TestJsonRenderer(unittest.TestCase):
         self.assertEqual(result["content"][0]["content"], [{"type": "text", "content": "Hello"}])
         self.assertEqual(result["content"][0]["level"], 1)
 
-    def test_line_breaks(self):
+    def test_line_breaks(self) -> None:
         """Test rendering of line breaks."""
         # Test the renderer method directly
         result = self.renderer.linebreak()

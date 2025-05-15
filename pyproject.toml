@@ -19,6 +19,28 @@ packages = [{include = "mistune_json", from = "src"}]
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.5"
 pytest-cov = "^6.1.1"
+ruff = "^0.11.10"
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = [
+    "F",      # pyflakes
+    "E",      # pycodestyle errors
+    "W",      # pycodestyle warnings
+    "I",      # isort
+    "D101",   # pydocstyle undocumented-public-class
+    "D102",   # pydocstyle undocumented-public-method
+    "D103",   # pydocstyle undocumented-public-function
+    "D105",   # pydocstyle undocumented-magic-method
+    "B",      # flake8-bugbear
+    "C4",     # flake8-comprehensions
+    "ANN",    # flake8-annotations
+]
+ignore = [
+    "ANN401", # any-type
+]
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
