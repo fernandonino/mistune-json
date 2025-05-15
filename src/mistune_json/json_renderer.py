@@ -1,5 +1,6 @@
-import mistune
 from typing import Any, Dict, Iterable, List, Optional
+
+import mistune
 
 
 class JsonRenderer(mistune.HTMLRenderer):
@@ -19,9 +20,7 @@ class JsonRenderer(mistune.HTMLRenderer):
         super().__init__(escape=False, allow_harmful_protocols=False)
         self._output: Dict[str, Any] = output if output is not None else {}
 
-    def render_tokens(
-        self, tokens: Iterable[Dict[str, Any]], state: Any
-    ) -> List[Dict[str, Any]]:
+    def render_tokens(self, tokens: Iterable[Dict[str, Any]], state: Any) -> List[Dict[str, Any]]:
         """
         Render a list of tokens into JSON structures.
 
@@ -34,9 +33,7 @@ class JsonRenderer(mistune.HTMLRenderer):
         """
         return list(self.iter_tokens(tokens, state))
 
-    def iter_tokens(
-        self, tokens: Iterable[Dict[str, Any]], state: Any
-    ) -> Iterable[Dict[str, Any]]:
+    def iter_tokens(self, tokens: Iterable[Dict[str, Any]], state: Any) -> Iterable[Dict[str, Any]]:
         """
         Iterate through tokens and yield rendered JSON structures.
 
@@ -92,7 +89,7 @@ class JsonRenderer(mistune.HTMLRenderer):
         """Render a block quote."""
         return {"type": "blockquote", "content": text}
 
-    def list(self, text: str, ordered: bool, **attrs) -> Dict[str, Any]:
+    def list(self, text: str, ordered: bool, **attrs: int) -> Dict[str, Any]:
         """Render an ordered or unordered list."""
         if ordered:
             result = {"type": "ol", "content": text}
