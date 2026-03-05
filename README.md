@@ -1,5 +1,6 @@
 # Mistune JSON
 
+
 A JSON renderer for the [Mistune](https://github.com/lepture/mistune) Markdown parser.
 
 ## Supported HTML elements
