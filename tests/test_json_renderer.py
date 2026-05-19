@@ -3,7 +3,102 @@ from typing import Any, Dict, List
 
 import mistune
 
-from mistune_json.json_renderer import JsonRenderer
+from mistune_json import JsonRenderer
+from mistune_json.exceptions import MistuneJSONError, MistuneJSONValidationError
+
+
+class TestExceptions(unittest.TestCase):
+    """Test suite for custom exception classes."""
+
+    def test_mistune_json_error_exists(self) -> None:
+        """Test that MistuneJSONError is importable."""
+        self.assertTrue(issubclass(MistuneJSONError, Exception))
+
+    def test_validation_error_exists(self) -> None:
+        """Test that MistuneJSONValidationError is importable."""
+        self.assertTrue(issubclass(MistuneJSONValidationError, MistuneJSONError))
+
+    def test_invalid_output_raises_validation_error(self) -> None:
+        """Test that non-dict output raises MistuneJSONValidationError."""
+        with self.assertRaises(MistuneJSONValidationError) as ctx:
+            JsonRenderer(output="not a dict")
+
+        self.assertIn("must be a dictionary", str(ctx.exception))
+
+    def test_invalid_output_list_raises_validation_error(self) -> None:
+        """Test that list output raises MistuneJSONValidationError."""
+        with self.assertRaises(MistuneJSONValidationError):
+            JsonRenderer(output=["not", "a", "dict"])
+
+    def test_valid_dict_output_works(self) -> None:
+        """Test that valid dict output is accepted."""
+        renderer = JsonRenderer(output={"key": "value"})
+        self.assertEqual(renderer._output, {"key": "value"})
+
+
+class TestExtensibilityHooks(unittest.TestCase):
+    """Test suite for extensibility hooks."""
+
+    def test_create_node_hook(self) -> None:
+        """Test that create_node can be overridden."""
+
+        class CustomRenderer(JsonRenderer):
+            def create_node(
+                self, node_type: str, data: Dict[str, Any]
+            ) -> Dict[str, Any]:
+                node = super().create_node(node_type, data)
+                node["custom_field"] = "added"
+                return node
+
+        renderer = CustomRenderer()
+        node = renderer.paragraph("test")
+
+        self.assertEqual(node["type"], "p")
+        self.assertEqual(node["content"], "test")
+        self.assertEqual(node["custom_field"], "added")
+
+    def test_finalize_output_hook(self) -> None:
+        """Test that finalize_output can be overridden."""
+
+        class CustomRenderer(JsonRenderer):
+            def finalize_output(self, output: Dict[str, Any]) -> Dict[str, Any]:
+                output["meta"] = {"version": "1.0"}
+                return output
+
+        renderer = CustomRenderer()
+        markdown = mistune.create_markdown(renderer=renderer)
+        result = markdown("# Hello")
+
+        self.assertIn("meta", result)
+        self.assertEqual(result["meta"]["version"], "1.0")
+        self.assertIn("content", result)
+
+    def test_hooks_applied_to_integration(self) -> None:
+        """Test hooks work in full integration."""
+
+        class CustomRenderer(JsonRenderer):
+            def create_node(
+                self, node_type: str, data: Dict[str, Any]
+            ) -> Dict[str, Any]:
+                node = super().create_node(node_type, data)
+                if node_type != "blank":
+                    node["rendered"] = True
+                return node
+
+            def finalize_output(self, output: Dict[str, Any]) -> Dict[str, Any]:
+                output["document"] = {"processed": True}
+                return output
+
+        renderer = CustomRenderer()
+        markdown = mistune.create_markdown(renderer=renderer)
+        result = markdown("# Title\n\nParagraph.")
+
+        self.assertEqual(result["document"]["processed"], True)
+        self.assertIn("content", result)
+
+        for item in result["content"]:
+            if item:
+                self.assertTrue(item.get("rendered", False))
 
 
 class TestJsonRenderer(unittest.TestCase):
