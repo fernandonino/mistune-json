@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - All render methods now use `create_node()` for building node dictionaries
+- Optimized `__call__` to use `filter()` for removing empty items (more Pythonic)
 
 ## [0.1.0] - 2024-12-15
 
