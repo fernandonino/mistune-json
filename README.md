@@ -115,6 +115,62 @@ The following elements are not yet supported:
 * Definition lists
 * Task lists
 
+## Extensibility
+
+You can subclass `JsonRenderer` to customize the JSON output by overriding two hooks:
+
+### `create_node(node_type, data)`
+
+Called for every node before it's returned. Override to add custom fields to nodes.
+
+```python
+from mistune_json import JsonRenderer
+
+class CustomRenderer(JsonRenderer):
+    def create_node(self, node_type, data):
+        node = super().create_node(node_type, data)
+        node["source"] = "mistune-json"  # Add source to all nodes
+        return node
+```
+
+### `finalize_output(output)`
+
+Called after all content is rendered. Override to transform the final output.
+
+```python
+from mistune_json import JsonRenderer
+
+class CustomRenderer(JsonRenderer):
+    def finalize_output(self, output):
+        output["meta"] = {"generated_by": "my-app"}
+        return output
+```
+
+### Full Example
+
+```python
+import mistune
+from mistune_json import JsonRenderer
+from datetime import datetime
+
+class CustomRenderer(JsonRenderer):
+    def create_node(self, node_type, data):
+        node = super().create_node(node_type, data)
+        node["rendered_at"] = datetime.now().isoformat()
+        return node
+    
+    def finalize_output(self, output):
+        output["meta"] = {"version": "1.0"}
+        return output
+
+renderer = CustomRenderer()
+markdown = mistune.create_markdown(renderer=renderer)
+result = markdown("# Hello")
+
+# Each node now has 'rendered_at', and output has 'meta'
+print(result)
+```
+
 ## Contributing and Feedback
 
 Contributions are welcome! Feel free to open issues for:
