@@ -1,6 +1,5 @@
 # Mistune JSON
 
-
 A JSON renderer for the [Mistune](https://github.com/lepture/mistune) Markdown parser.
 
 ## Supported HTML elements
@@ -31,7 +30,6 @@ pip install mistune-json
 ```
 
 ### Usage
-
 
 ```python
 import mistune
@@ -179,4 +177,3 @@ Contributions are welcome! Feel free to open issues for:
 * **Bugs** - Report problems with the JSON output structure
 
 Repository: [https://github.com/fernandonino/mistune-json](https://github.com/fernandonino/mistune-json)
-

@@ -11,3 +11,4 @@ class MistuneJSONValidationError(MistuneJSONError):
     """Raised when input validation fails."""
 
     pass
+
