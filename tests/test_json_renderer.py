@@ -3,7 +3,37 @@ from typing import Any, Dict, List
 
 import mistune
 
-from mistune_json.json_renderer import JsonRenderer
+from mistune_json import JsonRenderer
+from mistune_json.exceptions import MistuneJSONError, MistuneJSONValidationError
+
+
+class TestExceptions(unittest.TestCase):
+    """Test suite for custom exception classes."""
+
+    def test_mistune_json_error_exists(self) -> None:
+        """Test that MistuneJSONError is importable."""
+        self.assertTrue(issubclass(MistuneJSONError, Exception))
+
+    def test_validation_error_exists(self) -> None:
+        """Test that MistuneJSONValidationError is importable."""
+        self.assertTrue(issubclass(MistuneJSONValidationError, MistuneJSONError))
+
+    def test_invalid_output_raises_validation_error(self) -> None:
+        """Test that non-dict output raises MistuneJSONValidationError."""
+        with self.assertRaises(MistuneJSONValidationError) as ctx:
+            JsonRenderer(output="not a dict")
+
+        self.assertIn("must be a dictionary", str(ctx.exception))
+
+    def test_invalid_output_list_raises_validation_error(self) -> None:
+        """Test that list output raises MistuneJSONValidationError."""
+        with self.assertRaises(MistuneJSONValidationError):
+            JsonRenderer(output=["not", "a", "dict"])
+
+    def test_valid_dict_output_works(self) -> None:
+        """Test that valid dict output is accepted."""
+        renderer = JsonRenderer(output={"key": "value"})
+        self.assertEqual(renderer._output, {"key": "value"})
 
 
 class TestJsonRenderer(unittest.TestCase):
