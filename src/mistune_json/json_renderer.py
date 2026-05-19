@@ -32,6 +32,8 @@ class JsonRenderer(mistune.HTMLRenderer):
         """
         Render a list of tokens into JSON structures.
 
+        Note: This method is used internally by Mistune. Override with caution.
+
         Args:
             tokens: Iterable of tokens to render
             state: State object from Mistune parser
@@ -44,6 +46,8 @@ class JsonRenderer(mistune.HTMLRenderer):
     def iter_tokens(self, tokens: Iterable[Dict[str, Any]], state: Any) -> Iterable[Dict[str, Any]]:
         """
         Iterate through tokens and yield rendered JSON structures.
+
+        Note: This method is used internally by Mistune. Override with caution.
 
         Args:
             tokens: Iterable of tokens to render
