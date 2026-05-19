@@ -20,6 +20,9 @@ dependencies = [
     "mistune (>=3.1.3,<4.0.0)",
 ]
 
+[project.urls]
+homepage = "https://github.com/fernandonino/mistune-json"
+
 [tool.poetry]
 packages = [{include = "mistune_json", from = "src"}]
 
