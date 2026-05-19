@@ -99,8 +99,7 @@ class JsonRenderer(mistune.HTMLRenderer):
             Dictionary with rendered content
         """
         content = self.render_tokens(tokens, state)
-        filtered_content = [item for item in content if item]
-        self._output.update({"content": filtered_content})
+        self._output.update({"content": list(filter(None, content))})
         return self.finalize_output(self._output)
 
     # Block level tokens
