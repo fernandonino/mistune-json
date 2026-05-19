@@ -2,6 +2,8 @@ from typing import Any, Dict, Iterable, List, Optional
 
 import mistune
 
+from .exceptions import MistuneJSONValidationError
+
 
 class JsonRenderer(mistune.HTMLRenderer):
     """
@@ -15,8 +17,14 @@ class JsonRenderer(mistune.HTMLRenderer):
 
         Args:
             output: Optional dictionary to update with rendered content
+
+        Raises:
+            MistuneJSONValidationError: If output is not a dictionary
         """
-        # No need for escape HTML or skip style in JSON renderer
+        if output is not None and not isinstance(output, dict):
+            raise MistuneJSONValidationError(
+                f"output must be a dictionary, got {type(output).__name__}"
+            )
         super().__init__(escape=False, allow_harmful_protocols=False)
         self._output: Dict[str, Any] = output if output is not None else {}
 
