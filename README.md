@@ -1,7 +1,9 @@
 # Mistune JSON
+
 A JSON renderer for the [Mistune](https://github.com/lepture/mistune) Markdown parser.
 
 ## Supported HTML elements
+
 So far, the HTML elements supported by this renderer are limited to:
 
 * Paragraph, `<p>`
@@ -18,13 +20,17 @@ So far, the HTML elements supported by this renderer are limited to:
 * Both inline and block code
 
 ## How to use the JSON renderer
+
 ### Installation
-The package is not yet published in PyPI, but once it is, it will be installed with:
+
+The package is published in PyPI, so it can be installed through `pip` (as any other package):
+
 ```shell
 pip install mistune-json
 ```
 
 ### Usage
+
 ```python
 import mistune
 from mistune_json import JsonRenderer
@@ -39,16 +45,80 @@ markdown = mistune.create_markdown(renderer=renderer)
 result = markdown("# Hello, world!")
 
 print(result)
-# {'content': [{'type': 'h', 'content': ['type': 'text', 'content': 'Hello, world!'], 'level': 1}]}
+# {'content': [{'type': 'h', 'content': [{'type': 'text', 'content': 'Hello, world!'}], 'level': 1}]}
 ```
 
-## Improvements and bugs
+## Output Schema
 
-### Tables
-There is currently no support for rendering tables (headers and rows). It might be added in the future, if there is enough need for it. You can rise an issue [here](https://github.com/fernandonino/mistune-json/issues) and label it as _enhancement_.
+The JSON output is a dictionary with a `content` key containing a list of nodes. Each node has a `type` field identifying its kind.
 
-### Integration testing
-Tests for a full Markdown document will be added to assure that the JSON render works as expected.
+### Node Types
 
-### Bugs
-If you find a problem with the JSON output structure, feel free to [report a bug](https://github.com/fernandonino/mistune-json/issues).
+| Type | Description | Fields |
+|------|-------------|--------|
+| `text` | Plain text content | `content` (str) |
+| `p` | Paragraph | `content` (list of inline nodes) |
+| `h` | Heading (h1-h6) | `content` (list), `level` (int 1-6) |
+| `code` | Code block (fenced) | `content` (str), `lang` (str, optional) |
+| `codespan` | Inline code | `content` (str) |
+| `blockquote` | Block quote | `content` (list of inline nodes) |
+| `ol` | Ordered list | `content` (str), `start` (int, optional) |
+| `ul` | Unordered list | `content` (str) |
+| `a` | Link | `content` (str), `href` (str), `title` (str, optional) |
+| `img` | Image | `src` (str), `alt` (str), `title` (str, optional) |
+| `em` | Emphasis (italic) | `content` (str) |
+| `strong` | Strong (bold) | `content` (str) |
+| `hr` | Thematic break (horizontal rule) | - |
+| `br` | Line break | - |
+
+### Example
+
+Input:
+
+```markdown
+# Title
+
+This is a paragraph with **bold** and *italic* text.
+
+![alt text](image.png)
+
+- Item 1
+- Item 2
+```
+
+Output:
+
+```json
+{
+  "content": [
+    {"type": "h", "content": [{"type": "text", "content": "Title"}], "level": 1},
+    {"type": "p", "content": [
+      {"type": "text", "content": "This is a paragraph with "},
+      {"type": "strong", "content": "bold"},
+      {"type": "text", "content": " and "},
+      {"type": "em", "content": "italic"},
+      {"type": "text", "content": " text."}
+    ]},
+    {"type": "img", "src": "image.png", "alt": "alt text"},
+    {"type": "ul", "content": "..."}
+  ]
+}
+```
+
+## Limitations
+
+The following elements are not yet supported:
+
+* Tables (headers and rows)
+* Definition lists
+* Task lists
+
+## Contributing and Feedback
+
+Contributions are welcome! Feel free to open issues for:
+
+* **Enhancements** - Request new features or supported elements
+* **Bugs** - Report problems with the JSON output structure
+
+Repository: [https://github.com/fernandonino/mistune-json](https://github.com/fernandonino/mistune-json)
+
