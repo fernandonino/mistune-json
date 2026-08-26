@@ -10,7 +10,6 @@ __pycache__/
 **.vscode**
 
 # files
-*.lock
 .coverage
 
 # folders

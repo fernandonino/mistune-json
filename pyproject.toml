@@ -23,14 +23,15 @@ dependencies = [
 [project.urls]
 homepage = "https://github.com/fernandonino/mistune-json"
 
-[tool.poetry]
-packages = [{include = "mistune_json", from = "src"}]
+[tool.hatch.build.targets.wheel]
+packages = ["src/mistune_json"]
 
-
-[tool.poetry.group.dev.dependencies]
-pytest = "^8.3.5"
-pytest-cov = "^6.1.1"
-ruff = "^0.11.10"
+[dependency-groups]
+dev = [
+    "pytest>=8.3.5",
+    "pytest-cov>=6.1.1",
+    "ruff>=0.11.10",
+]
 
 [tool.ruff]
 line-length = 100
@@ -54,5 +55,5 @@ ignore = [
 ]
 
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
