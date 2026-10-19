@@ -309,6 +309,51 @@ class TestJsonRenderer(unittest.TestCase):
         self.assertEqual(result["content"], "List content")
         self.assertEqual(result["start"], 3)
 
+    def test_tight_list_item_flattens_content(self) -> None:
+        """Test that a tight list item holds inline nodes, not wrapped lists."""
+        md = "- one\n- two"
+        content = self.get_content(md)
+
+        self.assertEqual(content[0]["type"], "ul")
+        item = content[0]["content"][0]
+        self.assertEqual(item["type"], "item")
+        self.assertEqual(item["content"], [{"type": "text", "content": "one"}])
+        self.assertFalse(any(isinstance(node, list) for node in item["content"]))
+
+    def test_loose_list_item_preserves_paragraphs(self) -> None:
+        """Test that a loose list item keeps its paragraphs and drops blank nodes."""
+        md = "1. a\n\n   b\n\n2. c"
+        content = self.get_content(md)
+
+        item = content[0]["content"][0]
+        node_types = [node["type"] for node in item["content"]]
+        self.assertEqual(node_types, ["p", "p"])
+        self.assertNotIn(None, item["content"])
+        self.assertNotIn({}, item["content"])
+
+    def test_nested_list_is_sibling_in_item_content(self) -> None:
+        """Test that a nested list sits beside the text in the parent item's content."""
+        md = "- outer\n  - inner"
+        content = self.get_content(md)
+
+        item = content[0]["content"][0]
+        self.assertEqual(item["content"][0], {"type": "text", "content": "outer"})
+        nested = item["content"][1]
+        self.assertEqual(nested["type"], "ul")
+
+        nested_item = nested["content"][0]
+        self.assertEqual(nested_item["type"], "item")
+        self.assertEqual(nested_item["content"], [{"type": "text", "content": "inner"}])
+
+    def test_blank_lines_are_skipped(self) -> None:
+        """Test that consecutive blank lines collapse without adding nodes."""
+        md = "a\n\n\n\nb"
+        content = self.get_content(md)
+
+        self.assertEqual([node["type"] for node in content], ["p", "p"])
+        self.assertEqual(content[0]["content"], [{"type": "text", "content": "a"}])
+        self.assertEqual(content[1]["content"], [{"type": "text", "content": "b"}])
+
     def test_horizontal_rule(self) -> None:
         """Test rendering of horizontal rules."""
         # Test the renderer method directly
