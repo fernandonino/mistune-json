@@ -383,5 +383,57 @@ class TestJsonRenderer(unittest.TestCase):
         self.assertEqual(result["type"], "br")
 
 
+class TestDirectiveRendering(unittest.TestCase):
+    """The renderer's half of the directive contract (parsing lives in `writer`)."""
+
+    def setUp(self) -> None:
+        """Set up a renderer for each test."""
+        self.renderer = JsonRenderer()
+
+    def test_name_is_json(self) -> None:
+        """The renderer must not masquerade as an HTML renderer."""
+        self.assertEqual(JsonRenderer.NAME, "json")
+
+    def test_directive_node_shape(self) -> None:
+        """A directive token becomes {type, name, attrs, content}."""
+        token = {
+            "type": "directive",
+            "attrs": {"name": "position", "options": {"from": "2021"}},
+            "children": [{"type": "text", "raw": "Acme"}],
+        }
+
+        node = self.renderer.render_token(token, None)
+
+        self.assertEqual(
+            node,
+            {
+                "type": "directive",
+                "name": "position",
+                "attrs": {"from": "2021"},
+                "content": [{"type": "text", "content": "Acme"}],
+            },
+        )
+
+    def test_directive_without_options(self) -> None:
+        """Options are optional, and an empty body is an empty list."""
+        token = {
+            "type": "directive",
+            "attrs": {"name": "hr-ish"},
+            "children": [],
+        }
+
+        node = self.renderer.render_token(token, None)
+
+        self.assertEqual(node["attrs"], {})
+        self.assertEqual(node["content"], [])
+
+    def test_directive_is_a_code_block_without_a_plugin(self) -> None:
+        """The renderer alone does not turn `{name}` fences into directives."""
+        markdown = mistune.create_markdown(renderer=JsonRenderer())
+        content = markdown("```{position} Acme\n\nbody\n```")["content"]
+
+        self.assertEqual(content[0]["type"], "code")
+
+
 if __name__ == "__main__":
     unittest.main()

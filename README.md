@@ -18,6 +18,7 @@ So far, the HTML elements supported by this renderer are limited to:
 * Line breake, `<br>`
 * Thematic breake, `<hr>`
 * Both inline and block code
+* Generic directives (as `directive` nodes; parsing is a plugin's job)
 
 ## How to use the JSON renderer
 
@@ -56,20 +57,32 @@ The JSON output is a dictionary with a `content` key containing a list of nodes.
 
 | Type | Description | Fields |
 |------|-------------|--------|
-| `text` | Plain text content | `content` (str) |
-| `p` | Paragraph | `content` (list of inline nodes) |
-| `h` | Heading (h1-h6) | `content` (list), `level` (int 1-6) |
+| `text` | Plain text | `content` (str) |
+| `p` | Paragraph | `content` (Node[]) |
+| `h` | Heading (h1-h6) | `content` (Node[]), `level` (int 1-6) |
 | `code` | Code block (fenced) | `content` (str), `lang` (str, optional) |
 | `codespan` | Inline code | `content` (str) |
-| `blockquote` | Block quote | `content` (list of inline nodes) |
-| `ol` | Ordered list | `content` (str), `start` (int, optional) |
-| `ul` | Unordered list | `content` (str) |
-| `a` | Link | `content` (str), `href` (str), `title` (str, optional) |
+| `blockquote` | Block quote | `content` (Node[]) |
+| `ol` | Ordered list | `content` (Node[], of `item`), `start` (int, optional) |
+| `ul` | Unordered list | `content` (Node[], of `item`) |
+| `item` | List item | `content` (Node[]) |
+| `a` | Link | `content` (Node[]), `href` (str), `title` (str, optional) |
 | `img` | Image | `src` (str), `alt` (str), `title` (str, optional) |
-| `em` | Emphasis (italic) | `content` (str) |
-| `strong` | Strong (bold) | `content` (str) |
+| `em` | Emphasis (italic) | `content` (Node[]) |
+| `strong` | Strong (bold) | `content` (Node[]) |
+| `directive` | Generic directive | `name` (str), `attrs` (object), `content` (Node[]) |
 | `hr` | Thematic break (horizontal rule) | - |
 | `br` | Line break | - |
+
+`content` is a string only for text-bearing nodes (`text`, `code`, `codespan`); everywhere else it is
+a list of child nodes. Two rules hold at every depth:
+
+- **Blank lines produce no node.** Consecutive blank lines collapse.
+- **A renderer method that returns a list is spliced into its parent.** This is what makes
+  `block_text` (the paragraph Mistune uses inside a tight list) transparent, so list items get a flat
+  `content` array rather than `[[...]]`.
+
+Key order is not part of the contract; compare parsed JSON, not bytes.
 
 ### Example
 
@@ -94,16 +107,42 @@ Output:
     {"type": "h", "content": [{"type": "text", "content": "Title"}], "level": 1},
     {"type": "p", "content": [
       {"type": "text", "content": "This is a paragraph with "},
-      {"type": "strong", "content": "bold"},
+      {"type": "strong", "content": [{"type": "text", "content": "bold"}]},
       {"type": "text", "content": " and "},
-      {"type": "em", "content": "italic"},
+      {"type": "em", "content": [{"type": "text", "content": "italic"}]},
       {"type": "text", "content": " text."}
     ]},
     {"type": "img", "src": "image.png", "alt": "alt text"},
-    {"type": "ul", "content": "..."}
+    {"type": "ul", "content": [
+      {"type": "item", "content": [{"type": "text", "content": "Item 1"}]},
+      {"type": "item", "content": [{"type": "text", "content": "Item 2"}]}
+    ]}
   ]
 }
 ```
+
+### Directives
+
+A `directive` node is produced by a **parser plugin**, not by this package. The renderer only renames
+the token's `children` to `content` and copies `options` into `attrs`:
+
+```python
+{"type": "directive", "name": "position", "attrs": {"from": "2021"}, "content": [...]}
+```
+
+A plugin must emit a token of this shape. `children` is always present, even when empty, and `name`
+and the options ride inside `attrs` because Mistune's `render_token` forwards nothing else:
+
+```python
+{
+    "type": "directive",
+    "attrs": {"name": "position", "options": {"from": "2021"}},
+    "children": [],
+}
+```
+
+`JsonRenderer.NAME` is `"json"`, so Mistune's HTML-only directive plugins (admonition, figure,
+include, toc) decline to register themselves against it.
 
 ## Limitations
 

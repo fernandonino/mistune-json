@@ -11,6 +11,11 @@ class JsonRenderer(mistune.HTMLRenderer):
     instead of HTML.
     """
 
+    # The base class declares "html". Mistune's own directive plugins only
+    # register their HTML renderers when NAME == "html", so inheriting it would
+    # let them write HTML strings into the JSON tree.
+    NAME = "json"
+
     def __init__(self, output: Optional[Dict[str, Any]] = None) -> None:
         """
         Initialize the JSON renderer.
@@ -148,6 +153,43 @@ class JsonRenderer(mistune.HTMLRenderer):
     def thematic_break(self) -> Dict[str, Any]:
         """Render a thematic break (horizontal rule)."""
         return self.create_node("hr", {})
+
+    def directive(
+        self,
+        text: List[Dict[str, Any]],
+        name: str,
+        options: Optional[Dict[str, Any]] = None,
+    ) -> Dict[str, Any]:
+        """
+        Render a generic directive token.
+
+        Directive plugins emit ``{"type": "directive"}`` tokens whose ``attrs``
+        carry ``name`` and ``options``. This renderer never interprets either:
+        ``options`` is emitted verbatim as the node's ``attrs``.
+
+        The token's ``children`` must always be present, even as ``[]``:
+        ``render_token`` only supplies ``text`` when it sees ``children`` or
+        ``raw``.
+
+        Note:
+            This method is named after the token type on purpose. Mistune
+            dispatches on ``token["type"]`` and looks for an attribute with that
+            exact name, so ``render_directive`` would be unreachable. It must
+            not be passed to ``renderer.register()`` either: registration is for
+            unbound functions, while this is a bound method.
+
+        Args:
+            text: The rendered children of the directive.
+            name: The directive name. Opaque to this package.
+            options: Directive options, emitted as the node's ``attrs``.
+
+        Returns:
+            The directive node.
+        """
+        return self.create_node(
+            "directive",
+            {"name": name, "attrs": options or {}, "content": text},
+        )
 
     # Span level tokens
 
