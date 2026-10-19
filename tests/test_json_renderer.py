@@ -43,9 +43,7 @@ class TestExtensibilityHooks(unittest.TestCase):
         """Test that create_node can be overridden."""
 
         class CustomRenderer(JsonRenderer):
-            def create_node(
-                self, node_type: str, data: Dict[str, Any]
-            ) -> Dict[str, Any]:
+            def create_node(self, node_type: str, data: Dict[str, Any]) -> Dict[str, Any]:
                 node = super().create_node(node_type, data)
                 node["custom_field"] = "added"
                 return node
@@ -77,9 +75,7 @@ class TestExtensibilityHooks(unittest.TestCase):
         """Test hooks work in full integration."""
 
         class CustomRenderer(JsonRenderer):
-            def create_node(
-                self, node_type: str, data: Dict[str, Any]
-            ) -> Dict[str, Any]:
+            def create_node(self, node_type: str, data: Dict[str, Any]) -> Dict[str, Any]:
                 node = super().create_node(node_type, data)
                 if node_type != "blank":
                     node["rendered"] = True

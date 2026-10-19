@@ -124,6 +124,7 @@ Called for every node before it's returned. Override to add custom fields to nod
 ```python
 from mistune_json import JsonRenderer
 
+
 class CustomRenderer(JsonRenderer):
     def create_node(self, node_type, data):
         node = super().create_node(node_type, data)
@@ -138,6 +139,7 @@ Called after all content is rendered. Override to transform the final output.
 ```python
 from mistune_json import JsonRenderer
 
+
 class CustomRenderer(JsonRenderer):
     def finalize_output(self, output):
         output["meta"] = {"generated_by": "my-app"}
@@ -151,15 +153,17 @@ import mistune
 from mistune_json import JsonRenderer
 from datetime import datetime
 
+
 class CustomRenderer(JsonRenderer):
     def create_node(self, node_type, data):
         node = super().create_node(node_type, data)
         node["rendered_at"] = datetime.now().isoformat()
         return node
-    
+
     def finalize_output(self, output):
         output["meta"] = {"version": "1.0"}
         return output
+
 
 renderer = CustomRenderer()
 markdown = mistune.create_markdown(renderer=renderer)
