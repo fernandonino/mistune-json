@@ -57,11 +57,15 @@ class JsonRenderer(mistune.HTMLRenderer):
             Rendered JSON structures
         """
         for tok in tokens:
-            yield self.render_token(tok, state)
+            node = self.render_token(tok, state)
+            if node is None:
+                continue
+            if isinstance(node, list):
+                yield from node
+            else:
+                yield node
 
-    def create_node(
-        self, node_type: str, data: Dict[str, Any]
-    ) -> Dict[str, Any]:
+    def create_node(self, node_type: str, data: Dict[str, Any]) -> Dict[str, Any]:
         """
         Create a node dictionary. Override to customize node structure.
 
@@ -99,14 +103,14 @@ class JsonRenderer(mistune.HTMLRenderer):
             Dictionary with rendered content
         """
         content = self.render_tokens(tokens, state)
-        self._output.update({"content": list(filter(None, content))})
+        self._output.update({"content": content})
         return self.finalize_output(self._output)
 
     # Block level tokens
 
-    def blank_line(self) -> Dict[str, Any]:
+    def blank_line(self) -> Optional[Dict[str, Any]]:
         """Render a blank line."""
-        return {}
+        return None
 
     def paragraph(self, text: str) -> Dict[str, Any]:
         """Render a paragraph."""
