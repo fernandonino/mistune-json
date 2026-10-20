@@ -43,9 +43,7 @@ class TestExtensibilityHooks(unittest.TestCase):
         """Test that create_node can be overridden."""
 
         class CustomRenderer(JsonRenderer):
-            def create_node(
-                self, node_type: str, data: Dict[str, Any]
-            ) -> Dict[str, Any]:
+            def create_node(self, node_type: str, data: Dict[str, Any]) -> Dict[str, Any]:
                 node = super().create_node(node_type, data)
                 node["custom_field"] = "added"
                 return node
@@ -77,9 +75,7 @@ class TestExtensibilityHooks(unittest.TestCase):
         """Test hooks work in full integration."""
 
         class CustomRenderer(JsonRenderer):
-            def create_node(
-                self, node_type: str, data: Dict[str, Any]
-            ) -> Dict[str, Any]:
+            def create_node(self, node_type: str, data: Dict[str, Any]) -> Dict[str, Any]:
                 node = super().create_node(node_type, data)
                 if node_type != "blank":
                     node["rendered"] = True
@@ -309,6 +305,51 @@ class TestJsonRenderer(unittest.TestCase):
         self.assertEqual(result["content"], "List content")
         self.assertEqual(result["start"], 3)
 
+    def test_tight_list_item_flattens_content(self) -> None:
+        """Test that a tight list item holds inline nodes, not wrapped lists."""
+        md = "- one\n- two"
+        content = self.get_content(md)
+
+        self.assertEqual(content[0]["type"], "ul")
+        item = content[0]["content"][0]
+        self.assertEqual(item["type"], "item")
+        self.assertEqual(item["content"], [{"type": "text", "content": "one"}])
+        self.assertFalse(any(isinstance(node, list) for node in item["content"]))
+
+    def test_loose_list_item_preserves_paragraphs(self) -> None:
+        """Test that a loose list item keeps its paragraphs and drops blank nodes."""
+        md = "1. a\n\n   b\n\n2. c"
+        content = self.get_content(md)
+
+        item = content[0]["content"][0]
+        node_types = [node["type"] for node in item["content"]]
+        self.assertEqual(node_types, ["p", "p"])
+        self.assertNotIn(None, item["content"])
+        self.assertNotIn({}, item["content"])
+
+    def test_nested_list_is_sibling_in_item_content(self) -> None:
+        """Test that a nested list sits beside the text in the parent item's content."""
+        md = "- outer\n  - inner"
+        content = self.get_content(md)
+
+        item = content[0]["content"][0]
+        self.assertEqual(item["content"][0], {"type": "text", "content": "outer"})
+        nested = item["content"][1]
+        self.assertEqual(nested["type"], "ul")
+
+        nested_item = nested["content"][0]
+        self.assertEqual(nested_item["type"], "item")
+        self.assertEqual(nested_item["content"], [{"type": "text", "content": "inner"}])
+
+    def test_blank_lines_are_skipped(self) -> None:
+        """Test that consecutive blank lines collapse without adding nodes."""
+        md = "a\n\n\n\nb"
+        content = self.get_content(md)
+
+        self.assertEqual([node["type"] for node in content], ["p", "p"])
+        self.assertEqual(content[0]["content"], [{"type": "text", "content": "a"}])
+        self.assertEqual(content[1]["content"], [{"type": "text", "content": "b"}])
+
     def test_horizontal_rule(self) -> None:
         """Test rendering of horizontal rules."""
         # Test the renderer method directly
@@ -340,6 +381,58 @@ class TestJsonRenderer(unittest.TestCase):
         # Test the renderer method directly
         result = self.renderer.linebreak()
         self.assertEqual(result["type"], "br")
+
+
+class TestDirectiveRendering(unittest.TestCase):
+    """The renderer's half of the directive contract (parsing lives in `writer`)."""
+
+    def setUp(self) -> None:
+        """Set up a renderer for each test."""
+        self.renderer = JsonRenderer()
+
+    def test_name_is_json(self) -> None:
+        """The renderer must not masquerade as an HTML renderer."""
+        self.assertEqual(JsonRenderer.NAME, "json")
+
+    def test_directive_node_shape(self) -> None:
+        """A directive token becomes {type, name, attrs, content}."""
+        token = {
+            "type": "directive",
+            "attrs": {"name": "position", "options": {"from": "2021"}},
+            "children": [{"type": "text", "raw": "Acme"}],
+        }
+
+        node = self.renderer.render_token(token, None)
+
+        self.assertEqual(
+            node,
+            {
+                "type": "directive",
+                "name": "position",
+                "attrs": {"from": "2021"},
+                "content": [{"type": "text", "content": "Acme"}],
+            },
+        )
+
+    def test_directive_without_options(self) -> None:
+        """Options are optional, and an empty body is an empty list."""
+        token = {
+            "type": "directive",
+            "attrs": {"name": "hr-ish"},
+            "children": [],
+        }
+
+        node = self.renderer.render_token(token, None)
+
+        self.assertEqual(node["attrs"], {})
+        self.assertEqual(node["content"], [])
+
+    def test_directive_is_a_code_block_without_a_plugin(self) -> None:
+        """The renderer alone does not turn `{name}` fences into directives."""
+        markdown = mistune.create_markdown(renderer=JsonRenderer())
+        content = markdown("```{position} Acme\n\nbody\n```")["content"]
+
+        self.assertEqual(content[0]["type"], "code")
 
 
 if __name__ == "__main__":

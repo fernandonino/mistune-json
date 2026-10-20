@@ -12,10 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      - run: pip install ruff
+      - uses: astral-sh/setup-uv@v4
+      - run: uv tool install ruff
       - run: ruff check src/ tests/
 
   test:
@@ -23,12 +21,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      - run: pip install poetry
-      - run: poetry install --with dev
-      - run: poetry run pytest --cov=mistune_json --cov-report=xml
+      - uses: astral-sh/setup-uv@v4
+      - run: uv sync
+      - run: uv run pytest --cov=mistune_json --cov-report=xml
       - uses: codecov/codecov-action@v4
         with:
           file: ./coverage.xml
