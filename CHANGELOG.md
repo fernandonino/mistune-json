@@ -5,13 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.3.0] - yyyy-mm-dd
+## [0.3.0] - 2026-10-20
+
+### Changed (breaking)
+
+- Blank lines are no longer emitted at any depth.
+- List-item `content` is now a flat Node[] instead of a nested array.
 
 ### Added
 
-- Project homepage to the `pyproject.toml` file
+- `JsonRenderer.directive()` renders generic `directive` tokens as
+  `{type, name, attrs, content}`. Parsing a directive is a plugin's job; this package only defines
+  the output shape.
+- Project homepage to the `pyproject.toml` file.
 
-## [0.2.0] - 2025-05-19
+### Changed
+
+- `JsonRenderer.NAME` is now `"json"` instead of the inherited `"html"`, so Mistune's HTML-only
+  plugins (directives, tables, footnotes, ...) decline to register against it.
+
+## [0.2.0] - 2026-05-19
 
 ### Added
 
