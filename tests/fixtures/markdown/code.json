@@ -1,0 +1,22 @@
+{
+  "content": [
+    {
+      "content": "print(\"hello\")",
+      "lang": "python",
+      "type": "code"
+    },
+    {
+      "content": "plain block",
+      "type": "code"
+    },
+    {
+      "content": "indented line one\nindented line two",
+      "type": "code"
+    },
+    {
+      "content": "x = 1",
+      "lang": "python",
+      "type": "code"
+    }
+  ]
+}

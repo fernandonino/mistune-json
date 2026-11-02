@@ -1,0 +1,88 @@
+{
+  "content": [
+    {
+      "content": [
+        {
+          "content": [
+            {
+              "content": [
+                {
+                  "content": "alpha",
+                  "type": "text"
+                }
+              ],
+              "type": "p"
+            },
+            {
+              "content": [
+                {
+                  "content": "second paragraph of alpha",
+                  "type": "text"
+                }
+              ],
+              "type": "p"
+            }
+          ],
+          "type": "item"
+        },
+        {
+          "content": [
+            {
+              "content": [
+                {
+                  "content": "beta",
+                  "type": "text"
+                }
+              ],
+              "type": "p"
+            }
+          ],
+          "type": "item"
+        }
+      ],
+      "type": "ul"
+    },
+    {
+      "content": [
+        {
+          "content": [
+            {
+              "content": [
+                {
+                  "content": "first",
+                  "type": "text"
+                }
+              ],
+              "type": "p"
+            },
+            {
+              "content": [
+                {
+                  "content": "continued",
+                  "type": "text"
+                }
+              ],
+              "type": "p"
+            }
+          ],
+          "type": "item"
+        },
+        {
+          "content": [
+            {
+              "content": [
+                {
+                  "content": "second",
+                  "type": "text"
+                }
+              ],
+              "type": "p"
+            }
+          ],
+          "type": "item"
+        }
+      ],
+      "type": "ol"
+    }
+  ]
+}

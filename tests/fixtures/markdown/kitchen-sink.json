@@ -1,0 +1,188 @@
+{
+  "content": [
+    {
+      "content": [
+        {
+          "content": "A short article",
+          "type": "text"
+        }
+      ],
+      "level": 1,
+      "type": "h"
+    },
+    {
+      "content": [
+        {
+          "content": "An opening paragraph with ",
+          "type": "text"
+        },
+        {
+          "content": [
+            {
+              "content": "strong",
+              "type": "text"
+            }
+          ],
+          "type": "strong"
+        },
+        {
+          "content": ", ",
+          "type": "text"
+        },
+        {
+          "content": [
+            {
+              "content": "emphasis",
+              "type": "text"
+            }
+          ],
+          "type": "em"
+        },
+        {
+          "content": ", ",
+          "type": "text"
+        },
+        {
+          "content": "code",
+          "type": "codespan"
+        },
+        {
+          "content": ", and a ",
+          "type": "text"
+        },
+        {
+          "content": [
+            {
+              "content": "link",
+              "type": "text"
+            }
+          ],
+          "href": "https://example.com",
+          "type": "a"
+        },
+        {
+          "content": ".",
+          "type": "text"
+        }
+      ],
+      "type": "p"
+    },
+    {
+      "content": [
+        {
+          "alt": [
+            {
+              "content": "A cover image",
+              "type": "text"
+            }
+          ],
+          "src": "https://example.com/cover.png",
+          "title": "Cover",
+          "type": "img"
+        }
+      ],
+      "type": "p"
+    },
+    {
+      "content": [
+        {
+          "content": "A section",
+          "type": "text"
+        }
+      ],
+      "level": 2,
+      "type": "h"
+    },
+    {
+      "content": [
+        {
+          "content": [
+            {
+              "content": "A quote with two lines.",
+              "type": "text"
+            }
+          ],
+          "type": "p"
+        }
+      ],
+      "type": "blockquote"
+    },
+    {
+      "content": [
+        {
+          "content": [
+            {
+              "content": "first",
+              "type": "text"
+            }
+          ],
+          "type": "item"
+        },
+        {
+          "content": [
+            {
+              "content": "second",
+              "type": "text"
+            },
+            {
+              "content": [
+                {
+                  "content": [
+                    {
+                      "content": "nested",
+                      "type": "text"
+                    }
+                  ],
+                  "type": "item"
+                }
+              ],
+              "type": "ul"
+            }
+          ],
+          "type": "item"
+        }
+      ],
+      "type": "ul"
+    },
+    {
+      "content": [
+        {
+          "content": [
+            {
+              "content": "one",
+              "type": "text"
+            }
+          ],
+          "type": "item"
+        },
+        {
+          "content": [
+            {
+              "content": "two",
+              "type": "text"
+            }
+          ],
+          "type": "item"
+        }
+      ],
+      "type": "ol"
+    },
+    {
+      "content": "print(\"code\")",
+      "lang": "python",
+      "type": "code"
+    },
+    {
+      "type": "hr"
+    },
+    {
+      "content": [
+        {
+          "content": "Closing paragraph.",
+          "type": "text"
+        }
+      ],
+      "type": "p"
+    }
+  ]
+}

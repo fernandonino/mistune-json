@@ -1,0 +1,95 @@
+{
+  "content": [
+    {
+      "content": [
+        {
+          "content": "An inline ",
+          "type": "text"
+        },
+        {
+          "alt": [
+            {
+              "content": "alt text",
+              "type": "text"
+            }
+          ],
+          "src": "https://example.com/image.png",
+          "type": "img"
+        },
+        {
+          "content": " image.",
+          "type": "text"
+        }
+      ],
+      "type": "p"
+    },
+    {
+      "content": [
+        {
+          "alt": [
+            {
+              "content": "standalone image",
+              "type": "text"
+            }
+          ],
+          "src": "https://example.com/standalone.png",
+          "type": "img"
+        }
+      ],
+      "type": "p"
+    },
+    {
+      "content": [
+        {
+          "alt": [
+            {
+              "content": "titled image",
+              "type": "text"
+            }
+          ],
+          "src": "https://example.com/titled.png",
+          "title": "A title",
+          "type": "img"
+        }
+      ],
+      "type": "p"
+    },
+    {
+      "content": [
+        {
+          "alt": [
+            {
+              "content": "rich ",
+              "type": "text"
+            },
+            {
+              "content": [
+                {
+                  "content": "alt",
+                  "type": "text"
+                }
+              ],
+              "type": "em"
+            },
+            {
+              "content": " with ",
+              "type": "text"
+            },
+            {
+              "content": [
+                {
+                  "content": "marks",
+                  "type": "text"
+                }
+              ],
+              "type": "strong"
+            }
+          ],
+          "src": "https://example.com/rich.png",
+          "type": "img"
+        }
+      ],
+      "type": "p"
+    }
+  ]
+}

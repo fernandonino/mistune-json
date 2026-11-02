@@ -1,0 +1,96 @@
+{
+  "content": [
+    {
+      "content": [
+        {
+          "content": [
+            {
+              "content": "outer",
+              "type": "text"
+            },
+            {
+              "content": [
+                {
+                  "content": [
+                    {
+                      "content": "inner one",
+                      "type": "text"
+                    }
+                  ],
+                  "type": "item"
+                },
+                {
+                  "content": [
+                    {
+                      "content": "inner two",
+                      "type": "text"
+                    }
+                  ],
+                  "type": "item"
+                }
+              ],
+              "type": "ul"
+            }
+          ],
+          "type": "item"
+        },
+        {
+          "content": [
+            {
+              "content": "sibling",
+              "type": "text"
+            }
+          ],
+          "type": "item"
+        }
+      ],
+      "type": "ul"
+    },
+    {
+      "content": [
+        {
+          "content": [
+            {
+              "content": "outer",
+              "type": "text"
+            },
+            {
+              "content": [
+                {
+                  "content": [
+                    {
+                      "content": "inner",
+                      "type": "text"
+                    }
+                  ],
+                  "type": "item"
+                },
+                {
+                  "content": [
+                    {
+                      "content": "inner",
+                      "type": "text"
+                    }
+                  ],
+                  "type": "item"
+                }
+              ],
+              "type": "ol"
+            }
+          ],
+          "type": "item"
+        },
+        {
+          "content": [
+            {
+              "content": "sibling",
+              "type": "text"
+            }
+          ],
+          "type": "item"
+        }
+      ],
+      "type": "ol"
+    }
+  ]
+}

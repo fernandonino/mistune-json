@@ -35,6 +35,9 @@ dev = [
 
 [tool.ruff]
 line-length = 100
+# Fixtures are data, not code. `ruff format` would rewrite the whitespace inside
+# fenced blocks, and the code fixture depends on that whitespace.
+extend-exclude = ["tests/fixtures"]
 
 [tool.ruff.lint]
 select = [

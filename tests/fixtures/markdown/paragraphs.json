@@ -1,0 +1,22 @@
+{
+  "content": [
+    {
+      "content": [
+        {
+          "content": "First paragraph, plain text.",
+          "type": "text"
+        }
+      ],
+      "type": "p"
+    },
+    {
+      "content": [
+        {
+          "content": "Second paragraph with a trailing full stop.",
+          "type": "text"
+        }
+      ],
+      "type": "p"
+    }
+  ]
+}

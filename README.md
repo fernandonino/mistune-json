@@ -15,8 +15,8 @@ So far, the HTML elements supported by this renderer are limited to:
 * Emphasis, `<em>`
 * Strong, `<strong>`
 * Blockquote, `<blockquote>`
-* Line breake, `<br>`
-* Thematic breake, `<hr>`
+* Line break, `<br>`
+* Thematic break, `<hr>`
 * Both inline and block code
 * Generic directives (as `directive` nodes; parsing is a plugin's job)
 
@@ -67,7 +67,7 @@ The JSON output is a dictionary with a `content` key containing a list of nodes.
 | `ul` | Unordered list | `content` (Node[], of `item`) |
 | `item` | List item | `content` (Node[]) |
 | `a` | Link | `content` (Node[]), `href` (str), `title` (str, optional) |
-| `img` | Image | `src` (str), `alt` (str), `title` (str, optional) |
+| `img` | Image | `src` (str), `alt` (Node[]), `title` (str, optional) |
 | `em` | Emphasis (italic) | `content` (Node[]) |
 | `strong` | Strong (bold) | `content` (Node[]) |
 | `directive` | Generic directive | `name` (str), `attrs` (object), `content` (Node[]) |
@@ -82,7 +82,14 @@ a list of child nodes. Two rules hold at every depth:
   `block_text` (the paragraph Mistune uses inside a tight list) transparent, so list items get a flat
   `content` array rather than `[[...]]`.
 
-Key order is not part of the contract; compare parsed JSON, not bytes.
+A few field rules follow from the renderer itself:
+
+- `code.content` is stripped of leading and trailing whitespace.
+- `ol.start` is present only when the list does not start at 1.
+- `a.title` and `img.title` are omitted when the Markdown has no title.
+
+Key order is not part of the contract; compare parsed JSON, not bytes. The
+[golden fixtures](tests/fixtures/markdown) are the executable version of this table.
 
 ### Example
 
@@ -112,7 +119,11 @@ Output:
       {"type": "em", "content": [{"type": "text", "content": "italic"}]},
       {"type": "text", "content": " text."}
     ]},
-    {"type": "img", "src": "image.png", "alt": "alt text"},
+    {"type": "p", "content": [
+      {"type": "img", "src": "image.png", "alt": [
+        {"type": "text", "content": "alt text"}
+      ]}
+    ]},
     {"type": "ul", "content": [
       {"type": "item", "content": [{"type": "text", "content": "Item 1"}]},
       {"type": "item", "content": [{"type": "text", "content": "Item 2"}]}
@@ -127,7 +138,7 @@ A `directive` node is produced by a **parser plugin**, not by this package. The 
 the token's `children` to `content` and copies `options` into `attrs`:
 
 ```python
-{"type": "directive", "name": "position", "attrs": {"from": "2021"}, "content": [...]}
+{"type": "directive", "name": "callout", "attrs": {"tone": "warm"}, "content": [...]}
 ```
 
 A plugin must emit a token of this shape. `children` is always present, even when empty, and `name`
@@ -136,7 +147,7 @@ and the options ride inside `attrs` because Mistune's `render_token` forwards no
 ```python
 {
     "type": "directive",
-    "attrs": {"name": "position", "options": {"from": "2021"}},
+    "attrs": {"name": "callout", "options": {"tone": "warm"}},
     "children": [],
 }
 ```
@@ -151,6 +162,9 @@ The following elements are not yet supported:
 * Tables (headers and rows)
 * Definition lists
 * Task lists
+* Raw HTML (block or inline). Mistune still tokenizes it, so inline HTML can appear as a plain
+  string inside a node array. That is outside the `content` invariant described above; validate
+  documents before persisting them if your input may contain raw HTML.
 
 ## Extensibility
 
@@ -211,6 +225,19 @@ result = markdown("# Hello")
 # Each node now has 'rendered_at', and output has 'meta'
 print(result)
 ```
+
+## Golden fixtures
+
+`tests/fixtures/markdown` holds one `.md`/`.json` pair per behavior, and
+`tests/fixtures/directive-token.json` covers the renderer's half of the directive shape. Regenerate
+the expected files after a deliberate output change:
+
+```shell
+uv run python tests/update_fixtures.py
+```
+
+Review the diff. An unintended node shape change shows up there, which is the point: the fixtures
+are the compatibility fence for everyone consuming the package.
 
 ## Contributing and Feedback
 
