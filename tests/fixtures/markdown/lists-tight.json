@@ -1,0 +1,60 @@
+{
+  "content": [
+    {
+      "content": [
+        {
+          "content": [
+            {
+              "content": "alpha",
+              "type": "text"
+            }
+          ],
+          "type": "item"
+        },
+        {
+          "content": [
+            {
+              "content": "beta",
+              "type": "text"
+            }
+          ],
+          "type": "item"
+        }
+      ],
+      "type": "ul"
+    },
+    {
+      "content": [
+        {
+          "content": "Between the lists.",
+          "type": "text"
+        }
+      ],
+      "type": "p"
+    },
+    {
+      "content": [
+        {
+          "content": [
+            {
+              "content": "third",
+              "type": "text"
+            }
+          ],
+          "type": "item"
+        },
+        {
+          "content": [
+            {
+              "content": "fourth",
+              "type": "text"
+            }
+          ],
+          "type": "item"
+        }
+      ],
+      "start": 3,
+      "type": "ol"
+    }
+  ]
+}

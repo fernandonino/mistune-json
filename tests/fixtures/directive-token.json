@@ -1,0 +1,30 @@
+{
+  "token": {
+    "type": "directive",
+    "attrs": {
+      "name": "article_header",
+      "options": {
+        "date": "2024-09-02"
+      }
+    },
+    "children": [
+      {
+        "type": "text",
+        "raw": "A title"
+      }
+    ]
+  },
+  "expected": {
+    "type": "directive",
+    "name": "article_header",
+    "attrs": {
+      "date": "2024-09-02"
+    },
+    "content": [
+      {
+        "type": "text",
+        "content": "A title"
+      }
+    ]
+  }
+}

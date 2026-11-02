@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.1] - 2026-11-02
+
+### Added
+
+- Golden fixture suite in `tests/fixtures/` covering the public node vocabulary, plus a
+  directive-token fixture. Regenerate with `uv run python tests/update_fixtures.py`.
+- CI job that runs the suite against the minimum supported Mistune version.
+
+### Changed
+
+- README: `img.alt` is a `Node[]`, not a string, and the example shows standalone images wrapped in
+  a paragraph. Documented code whitespace stripping, optional `ol.start`, omitted titles, and the
+  raw-HTML limitation.
+
 ## [0.3.0] - 2026-10-20
 
 ### Changed (breaking)

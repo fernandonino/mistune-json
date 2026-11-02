@@ -1,0 +1,70 @@
+{
+  "content": [
+    {
+      "content": [
+        {
+          "content": [
+            {
+              "content": "A quoted paragraph.",
+              "type": "text"
+            }
+          ],
+          "type": "p"
+        },
+        {
+          "content": [
+            {
+              "content": [
+                {
+                  "content": "A nested quote.",
+                  "type": "text"
+                }
+              ],
+              "type": "p"
+            }
+          ],
+          "type": "blockquote"
+        }
+      ],
+      "type": "blockquote"
+    },
+    {
+      "content": [
+        {
+          "content": [
+            {
+              "content": "Quoted heading",
+              "type": "text"
+            }
+          ],
+          "level": 2,
+          "type": "h"
+        },
+        {
+          "content": [
+            {
+              "content": [
+                {
+                  "content": "one",
+                  "type": "text"
+                }
+              ],
+              "type": "item"
+            },
+            {
+              "content": [
+                {
+                  "content": "two",
+                  "type": "text"
+                }
+              ],
+              "type": "item"
+            }
+          ],
+          "type": "ul"
+        }
+      ],
+      "type": "blockquote"
+    }
+  ]
+}

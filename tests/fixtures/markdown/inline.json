@@ -1,0 +1,163 @@
+{
+  "content": [
+    {
+      "content": [
+        {
+          "content": "Plain ",
+          "type": "text"
+        },
+        {
+          "content": [
+            {
+              "content": "strong",
+              "type": "text"
+            }
+          ],
+          "type": "strong"
+        },
+        {
+          "content": ", ",
+          "type": "text"
+        },
+        {
+          "content": [
+            {
+              "content": "emphasis",
+              "type": "text"
+            }
+          ],
+          "type": "em"
+        },
+        {
+          "content": ", ",
+          "type": "text"
+        },
+        {
+          "content": "codespan",
+          "type": "codespan"
+        },
+        {
+          "content": ", and a ",
+          "type": "text"
+        },
+        {
+          "content": [
+            {
+              "content": "link",
+              "type": "text"
+            }
+          ],
+          "href": "https://example.com",
+          "title": "Example",
+          "type": "a"
+        },
+        {
+          "content": ".",
+          "type": "text"
+        }
+      ],
+      "type": "p"
+    },
+    {
+      "content": [
+        {
+          "content": "Nested ",
+          "type": "text"
+        },
+        {
+          "content": [
+            {
+              "content": [
+                {
+                  "content": "strong and emphasis",
+                  "type": "text"
+                }
+              ],
+              "type": "strong"
+            }
+          ],
+          "type": "em"
+        },
+        {
+          "content": " and a ",
+          "type": "text"
+        },
+        {
+          "content": [
+            {
+              "content": "link without a title",
+              "type": "text"
+            }
+          ],
+          "href": "https://example.com",
+          "type": "a"
+        },
+        {
+          "content": ".",
+          "type": "text"
+        }
+      ],
+      "type": "p"
+    },
+    {
+      "content": [
+        {
+          "content": "An autolink ",
+          "type": "text"
+        },
+        {
+          "content": [
+            {
+              "content": "https://example.com",
+              "type": "text"
+            }
+          ],
+          "href": "https://example.com",
+          "type": "a"
+        },
+        {
+          "content": " and a line break.",
+          "type": "text"
+        },
+        {
+          "type": "br"
+        },
+        {
+          "content": "Second line.",
+          "type": "text"
+        }
+      ],
+      "type": "p"
+    },
+    {
+      "content": [
+        {
+          "content": "Also ",
+          "type": "text"
+        },
+        {
+          "content": [
+            {
+              "content": "emphasis with ",
+              "type": "text"
+            },
+            {
+              "content": "codespan",
+              "type": "codespan"
+            },
+            {
+              "content": " inside",
+              "type": "text"
+            }
+          ],
+          "type": "em"
+        },
+        {
+          "content": ".",
+          "type": "text"
+        }
+      ],
+      "type": "p"
+    }
+  ]
+}

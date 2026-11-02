@@ -1,0 +1,78 @@
+{
+  "content": [
+    {
+      "content": [
+        {
+          "content": "First.",
+          "type": "text"
+        }
+      ],
+      "type": "p"
+    },
+    {
+      "content": [
+        {
+          "content": "Second.",
+          "type": "text"
+        }
+      ],
+      "type": "p"
+    },
+    {
+      "content": [
+        {
+          "content": [
+            {
+              "content": "Quoted first.",
+              "type": "text"
+            }
+          ],
+          "type": "p"
+        },
+        {
+          "content": [
+            {
+              "content": "Quoted second.",
+              "type": "text"
+            }
+          ],
+          "type": "p"
+        }
+      ],
+      "type": "blockquote"
+    },
+    {
+      "content": [
+        {
+          "content": [
+            {
+              "content": [
+                {
+                  "content": "one",
+                  "type": "text"
+                }
+              ],
+              "type": "p"
+            }
+          ],
+          "type": "item"
+        },
+        {
+          "content": [
+            {
+              "content": [
+                {
+                  "content": "two",
+                  "type": "text"
+                }
+              ],
+              "type": "p"
+            }
+          ],
+          "type": "item"
+        }
+      ],
+      "type": "ul"
+    }
+  ]
+}
