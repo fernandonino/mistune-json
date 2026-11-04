@@ -1,6 +1,6 @@
 [project]
 name = "mistune-json"
-version = "0.3.1"
+version = "0.3.2"
 description = "A JSON renderer for the Mistune Markdown parser"
 readme = "README.md"
 license = "MIT"
