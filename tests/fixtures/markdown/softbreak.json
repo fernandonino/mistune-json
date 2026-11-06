@@ -1,0 +1,30 @@
+{
+  "content": [
+    {
+      "content": [
+        {
+          "content": "line one",
+          "type": "text"
+        },
+        {
+          "content": "\n",
+          "type": "text"
+        },
+        {
+          "content": "line two",
+          "type": "text"
+        }
+      ],
+      "type": "p"
+    },
+    {
+      "content": [
+        {
+          "content": "next paragraph",
+          "type": "text"
+        }
+      ],
+      "type": "p"
+    }
+  ]
+}

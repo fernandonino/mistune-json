@@ -87,6 +87,7 @@ A few field rules follow from the renderer itself:
 - `code.content` is stripped of leading and trailing whitespace.
 - `ol.start` is present only when the list does not start at 1.
 - `a.title` and `img.title` are omitted when the Markdown has no title.
+- A soft line break becomes a `text` node containing `"\n"`; it never surfaces as a bare string.
 
 Key order is not part of the contract; compare parsed JSON, not bytes. The
 [golden fixtures](tests/fixtures/markdown) are the executable version of this table.

@@ -223,6 +223,10 @@ class JsonRenderer(mistune.HTMLRenderer):
         """Render a line break."""
         return self.create_node("br", {})
 
+    def softbreak(self) -> Dict[str, Any]:
+        """Render a soft line break as text, never as a bare string."""
+        return self.create_node("text", {"content": "\n"})
+
     def text(self, text: str) -> Dict[str, Any]:
         """Render plain text."""
         return self.create_node("text", {"content": text})
