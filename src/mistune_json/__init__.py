@@ -8,5 +8,5 @@ instead of HTML.
 from .exceptions import MistuneJSONError, MistuneJSONValidationError
 from .json_renderer import JsonRenderer
 
-__version__ = "0.3.1"
+__version__ = "0.3.2"
 __all__ = ["JsonRenderer", "MistuneJSONError", "MistuneJSONValidationError"]
